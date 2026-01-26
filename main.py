@@ -3,17 +3,25 @@ from typing import Any
 from client.llm_client import LLMClient
 import click
 
-async def run(messages: dict[str, Any]) -> None:
+class CLI:
+    def __init__(self):
+        pass
+
+    def run_single(self):
+        pass
+
+async def run(messages: dict[str, Any]):
+    client = LLMClient()
+    async for event in client.chat_completion(messages, stream=True):
+        print(event)
 
 @click.command()
 @click.argument("prompt", required=False)
 def main(prompt: str | None = None):
-    client = LLMClient()
-    messages = [{"role": "user", "content": "Hello, how are you?"}]
-    async for event in client.chat_completion(messages, stream=True):
-        print(event)
-    print("Hello from sovereign-agents!")
-
+    print(prompt)
+    messages = [{"role": "user", "content": prompt}]
+    asyncio.run(run(messages))
+    print("Done")
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
