@@ -32,7 +32,7 @@ class LLMClient:
                 client = self.get_client()
 
                 kwargs = {
-                    "model": "mistralai/devstral-2512:free",
+                    "model": "google/gemma-3-27b-it:free",
                     "messages": messages,
                     "stream": stream,
                 }

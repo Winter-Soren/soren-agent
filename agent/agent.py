@@ -11,6 +11,7 @@ class Agent:
 
     async def run(self, message: str):
         yield AgentEvent.agent_start(message)
+        final_response: str | None = None
         
         async for event in self._agentic_loop():
             yield event
@@ -26,7 +27,7 @@ class Agent:
         messages = [
             {
                 "role": "system",
-                "content": "You are a helpful assistant of Oracle Corporation."
+                "content": "You are a helpful assistant."
             }
         ]
         
