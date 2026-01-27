@@ -4,7 +4,7 @@ from typing import Any, AsyncGenerator
 from openai import APIConnectionError, APIError, AsyncOpenAI, RateLimitError
 from dotenv import load_dotenv
 
-from client.responses import EventType, StreamEvent, TextDelta, TokenUsage
+from client.responses import StreamEventType, StreamEvent, TextDelta, TokenUsage
 
 load_dotenv()
 
@@ -49,16 +49,16 @@ class LLMClient:
                 if attempt < self.max_retries:
                     await asyncio.sleep(2 ** attempt)
                 else:
-                    yield StreamEvent(type=EventType.ERROR, error=f"Rate limit exceeded: {e}")
+                    yield StreamEvent(type=StreamEventType.ERROR, error=f"Rate limit exceeded: {e}")
                     return
             except APIConnectionError as e:
                 if attempt < self.max_retries:
                     await asyncio.sleep(2 ** attempt)
                 else:
-                    yield StreamEvent(type=EventType.ERROR, error=f"API connection error: {e}")
+                    yield StreamEvent(type=StreamEventType.ERROR, error=f"API connection error: {e}")
                     return
             except APIError as e:
-                yield StreamEvent(type=EventType.ERROR, error=f"API error: {e}")
+                yield StreamEvent(type=StreamEventType.ERROR, error=f"API error: {e}")
                 return
 
 
@@ -84,7 +84,7 @@ class LLMClient:
                 finish_reason = choice.finish_reason
 
             if delta.content:
-                yield StreamEvent(type=EventType.TEXT_DELTA, text_delta=TextDelta(content=delta.content), usage=usage)
+                yield StreamEvent(type=StreamEventType.TEXT_DELTA, text_delta=TextDelta(content=delta.content), usage=usage)
 
     async def _non_stream_response(self, client: AsyncOpenAI, kwargs: dict[str, Any]):
         response = await client.chat.completions.create(**kwargs)
@@ -100,4 +100,4 @@ class LLMClient:
             usage = TokenUsage(prompt_tokens=response.usage.prompt_tokens, completion_tokens=response.usage.completion_tokens, total_tokens=response.usage.total_tokens, cached_tokens=response.usage.prompt_tokens_details.cached_tokens)
 
 
-        return StreamEvent(type=EventType.MESSAGE_COMPLETE, text_delta=text_delta, finish_reason=choice.finish_reason, usage=usage)
+        return StreamEvent(type=StreamEventType.MESSAGE_COMPLETE, text_delta=text_delta, finish_reason=choice.finish_reason, usage=usage)
