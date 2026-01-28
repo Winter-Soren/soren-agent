@@ -35,6 +35,7 @@ class LLMClient:
                     "model": "google/gemma-3-27b-it:free",
                     "messages": messages,
                     "stream": stream,
+                    
                 }
 
                 if stream:
