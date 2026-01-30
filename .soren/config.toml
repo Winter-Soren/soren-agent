@@ -1,0 +1,29 @@
+hooks_enabled = true
+
+[model]
+# Using a free model that supports tool use/function calling
+name = "openai/gpt-4o-mini"
+temperature = 0
+
+# Alternative models you can try:
+# name = "qwen/qwen-2.5-7b-instruct:free"  # Another good free option
+# name = "openai/gpt-4o-mini"  # Paid but very good (default)
+# name = "anthropic/claude-3.5-sonnet"  # Best quality (paid)
+
+[[hooks]]
+name='test_before_tool'
+trigger='before_tool'
+command='python3 ./scripts/test_tool.py'
+
+[[hooks]]
+name='test_before_agent'
+trigger='before_agent'
+command='python3 ./scripts/test_tool.py'
+
+[mcp_servers.filesystem]
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-filesystem", "C:/Users/Soham Bhoir/Desktop/code/CODE/projects/soren-agent", "/tmp"]
+
+[mcp_servers.filesystem2]
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-filesystem222222222222", "C:/Users/Soham Bhoir/Desktop/code/CODE/projects/soren-agent", "/tmp"]
